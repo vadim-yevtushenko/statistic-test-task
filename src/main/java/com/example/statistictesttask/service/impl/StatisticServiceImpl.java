@@ -9,6 +9,7 @@ import com.example.statistictesttask.service.impl.model.Report;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class StatisticServiceImpl implements StatisticService {
 
@@ -77,6 +79,8 @@ public class StatisticServiceImpl implements StatisticService {
         saveAllAsin(report.getSalesAndTrafficByAsin());
         saveAllDate(report.getSalesAndTrafficByDate());
 
+        log.info("Db updated");
+
     }
 
     @Scheduled(fixedDelay = 300000)
@@ -84,6 +88,7 @@ public class StatisticServiceImpl implements StatisticService {
         Cache statistic = cacheManager.getCache("statistic");
         if (statistic != null){
             statistic.clear();
+            log.info("Cash cleared");
         }
     }
     private List<String> getDatesPeriod(String startDate, String finishDate) {
